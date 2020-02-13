@@ -1,0 +1,10 @@
+//First set delegate of textFiled and Update Label as you type inside textfield
+func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        let currentText = textField.text! as NSString
+        let updatedText = currentText.replacingCharacters(in: range, with: string)
+        
+        receivingAmountLabel.text = updatedText
+
+        return true
+    }
