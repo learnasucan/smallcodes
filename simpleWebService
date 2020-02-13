@@ -19,11 +19,10 @@ class ViewController: UIViewController {
             if let error = error {
                 print(error)
             }else if let data = data {
-                
+            
                 let articleList = try? JSONDecoder().decode(NewsResponse.self, from: data)
                 
                 if let articleList = articleList {
-                    
                     print(articleList.articles)
                 }
             }
