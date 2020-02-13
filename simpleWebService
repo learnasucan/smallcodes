@@ -1,0 +1,36 @@
+//UrlSession call
+import UIKit
+
+class ViewController: UIViewController {
+
+      override func viewDidLoad() {
+        super.viewDidLoad()
+  
+        callNews()
+    }
+
+
+    func callNews() {
+    
+        let url = URL(string: "https://newsapi.org/v2/top-headlines?country=us&apiKey=0cf790498275413a9247f8b94b3843fd")!
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            
+            if let error = error {
+                print(error)
+            }else if let data = data {
+                let list = try? JSONDecoder().decode(NewsResponse.self, from: data)
+                print(list)
+            }
+            
+        }.resume()
+    }
+    
+  
+ }  
+ 
+ struct NewsResponse:Codable {
+    let status : String
+    let totalResults : Int
+}
+    
