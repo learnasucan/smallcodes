@@ -1,0 +1,76 @@
+/**
+
+Using WebService call
+
+*/
+
+import UIKit
+
+class ViewController: UIViewController {
+
+      override func viewDidLoad() {
+        super.viewDidLoad()
+  
+        callNews()
+    }
+
+
+    func callNews() {
+    
+        let url = URL(string: "https://newsapi.org/v2/top-headlines?country=us&apiKey=0cf790498275413a9247f8b94b3843fd")!
+        
+        Webservice.load(url: url) { (articleList) in
+            
+            guard let articleList = articleList else {
+                return
+            }
+            
+            print(articleList)
+            
+        }
+
+        
+    }
+    
+  
+ }  
+ 
+struct NewsResponse:Codable {
+    let status : String
+    let totalResults : Int
+    let articles : [Article]
+}
+
+struct Article:Codable {
+    let author: String?
+    let title: String
+    let description: String?
+    let publishedAt: String?
+    let url: String?
+}
+
+
+class Webservice {
+    
+    static func load(url: URL, completion: @escaping ([Article]?) -> ())  {
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            
+            if let error = error {
+                
+                print(error)
+                completion(nil)
+                
+            }else if let data = data {
+                
+                let response = try? JSONDecoder().decode(NewsResponse.self, from: data)
+                completion(response?.articles)
+                
+            }
+            
+        }.resume()
+        
+    }
+}
+
+
