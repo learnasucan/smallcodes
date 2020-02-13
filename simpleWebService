@@ -14,23 +14,38 @@ class ViewController: UIViewController {
     
         let url = URL(string: "https://newsapi.org/v2/top-headlines?country=us&apiKey=0cf790498275413a9247f8b94b3843fd")!
         
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
+         URLSession.shared.dataTask(with: url) { (data, response, error) in
             
             if let error = error {
                 print(error)
             }else if let data = data {
-                let list = try? JSONDecoder().decode(NewsResponse.self, from: data)
-                print(list)
+                
+                let articleList = try? JSONDecoder().decode(NewsResponse.self, from: data)
+                
+                if let articleList = articleList {
+                    
+                    print(articleList.articles)
+                }
             }
             
         }.resume()
+        
     }
     
   
  }  
  
- struct NewsResponse:Codable {
+struct NewsResponse:Codable {
     let status : String
     let totalResults : Int
+    let articles : [Article]
 }
-    
+
+struct Article:Codable {
+    let author: String?
+    let title: String
+    let description: String?
+    let publishedAt: String?
+    let url: String?
+}
+
