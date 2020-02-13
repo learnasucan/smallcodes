@@ -1,0 +1,55 @@
+import Foundation
+
+struct Resource<T> {
+    let url: URL
+    let parse: (Data) -> T?
+}
+
+final class Webservice {
+    
+    func load<T>(resource: Resource<T>, completion: @escaping (T?) -> ()) {
+        
+        URLSession.shared.dataTask(with: resource.url) { data, response, error in
+        
+            if let data = data {
+                DispatchQueue.main.async {
+                     completion(resource.parse(data))
+                }
+            } else {
+                completion(nil)
+            }
+            
+        }.resume()
+        
+    }
+    
+}
+
+//Used inside class on buttonActions
+
+    @IBAction func saveCityButtonPressed() {
+       
+        if let city = cityNameTextField.text {
+            
+            let weatherURL = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=\(city)&APPID=YourKEY&units=imperial")!
+            
+            let weatherResource = Resource<WeatherViewModel>(url: weatherURL) { data in
+                
+                let weatherVM = try? JSONDecoder().decode(WeatherViewModel.self, from: data)
+                return weatherVM
+            }
+            
+            Webservice().load(resource: weatherResource) { [weak self] result in
+                
+                if let weatherVM = result {
+                    
+                   //store weatherVM and use in tableview dataSource
+                    
+                }
+                
+            }
+            
+            
+        }
+       
+    }
